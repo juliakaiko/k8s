@@ -19,7 +19,7 @@ A containerized microservices application deployed on Kubernetes with Spring Boo
 ## Quick Start
 
 ### 1. Build Docker Images
-docker build -t authservice:latest ./auth-service
+- docker build -t authservice:latest ./auth-service
 - docker build -t userservice:latest ./user-service
 - docker build -t orderservice:latest ./order-service
 - docker build -t paymentservice:latest ./payment-service
