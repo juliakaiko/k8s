@@ -80,7 +80,7 @@ Add to your C:\Windows\System32\drivers\etc\hosts: **127.0.0.1 innowise-project.
   - kubectl apply -f k8s/03-services/
   - kubectl apply -f k8s/04-networking/
 
-- Install the NGINX Ingress Controller:
+- Install the official manifest for NGINX Ingress Controller deployment in Kubernetes:
   - kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 
 - Check that the controller is running:
