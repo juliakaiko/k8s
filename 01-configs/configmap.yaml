@@ -1,0 +1,23 @@
+#In Kubernetes instead of .env uses ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  # Postgres
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+
+  DB_NAME: "userservicedb"
+  DB_AUTH_NAME: "authdb"
+  DB_ORDER_NAME: "orderdb"
+  DB_PAYMENT_NAME: "paymentDB"
+
+  #  Redis
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+
+  # MongoDB
+  DB_PAYMENT_HOST: "mongodb"
+  DB_PAYMENT_PORT: "27017"

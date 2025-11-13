@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      # Service Account for RBAC rights
+      serviceAccountName: gateway
+      containers:
+        - name: gateway
+          image: gateway:latest
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: SERVICES_USERSERVICE_URL
+              value: "http://userservice:8083"
+            - name: SERVICES_AUTHSERVICE_URL
+              value: "http://authservice:8081"
+            - name: SERVICES_ORDERSERVICE_URL
+              value: "http://orderservice:8082"
+            - name: SERVICES_PAYMENTSERVICE_URL
+              value: "http://paymentservice:8084"
+            - name: SERVER_PORT
+              value: "8080"
+            - name: SERVER_ADDRESS    # for Kubernetes: so that the Pod is accessible from the cluster (not only localhost), and not just within itself
+              value: "0.0.0.0"
+            # use static routes in application-prod.yml
+            - name: SPRING_CLOUD_KUBERNETES_DISCOVERY_ENABLED
+              value: "false"
+            # enable app-config and app-secrets => use the configuration in application-prod.yml
+            - name: SPRING_CLOUD_KUBERNETES_CONFIG_ENABLED
+              value: "false"
+            - name: MANAGEMENT_HEALTH_KUBERNETES_ENABLED
+              value: "false"
+          startupProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+spec:
+  selector:
+    app: gateway
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
