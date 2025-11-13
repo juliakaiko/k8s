@@ -39,7 +39,7 @@ Add to your C:\Windows\System32\drivers\etc\hosts: **127.0.0.1 innowise-project.
 - Liveness probes
 - Readiness probes
 - Startup probes
-- Resource limits (CPU/Me
+- Resource limits (CPU/Memory)
 
 ## Development
 - Uses imagePullPolicy: Never for local development in Docker
